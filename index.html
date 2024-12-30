@@ -50,16 +50,23 @@ Quagga.init({
         name : "Live",
         type : "LiveStream",
         constraints: {
-            facingMode: "environment" // Rear camera
+            facingMode: "environment", // Rear camera
+            width: { ideal: 1280 },    // Resolusi horizontal ideal
+            height: { ideal: 720 },    // Resolusi vertikal ideal
         },
         // target: document.querySelector('#cameraScanner')    // Or '#yourElement' (optional)
         target: videoElement
     },
     decoder : {
-      readers : ["code_128_reader"]
+      readers : [
+        "ean_reader",       // EAN-13
+        "ean_8_reader",     // EAN-8
+        "upc_reader",       // UPC-A
+        "code_128_reader"   // Code 128
+      ]
     },
     locator: {
-        patchSize: "medium", // x-small, small, medium, large, x-large
+        patchSize: "large", // x-small, small, medium, large, x-large
     },
   }, function(err) {
       if (err) {
@@ -78,8 +85,10 @@ Quagga.onDetected(function(result) {
 
     console.log("Barcode detected: ", code);
     // Quagga.stop(); // Uncomment jika ingin menghentikan scanner setelah deteksi
-});
 
+    Quagga.stop(); // Hentikan sementara pemindaian
+    setTimeout(() => Quagga.start(), 3000); // Mulai ulang setelah 3 detik
+});
     </script>
 </body>
 </html>
